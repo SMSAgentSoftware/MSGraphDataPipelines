@@ -7,7 +7,7 @@
 $ProgressPreference = 'SilentlyContinue' # Speeds up web requests
 $429RetryCount = 5 # How many times to retry a request if a 429 status code is received
 # Azure SQL database connection string
-$AzSQLDBConnectionString = "Server=tcp:hts001azrsql001.database.windows.net,1433;Initial Catalog=DeviceReporting;Persist Security Info=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;"
+$AzSQLDBConnectionString = "Server=tcp:<SQLServerName>.database.windows.net,1433;Initial Catalog=<DatabaseName>;Persist Security Info=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;"
 #endregion --------------------------------------------------------------------------------------------------------
 
 
@@ -99,7 +99,7 @@ do {
     try 
     {
         $null = Connect-AzAccount -Identity -ErrorAction Stop
-        $script:GraphToken = (Get-AzAccessToken -ResourceTypeName MSGraph -ErrorAction Stop).Token
+        $script:GraphToken = (Get-AzAccessToken -ResourceTypeName MSGraph -AsSecureString -ErrorAction Stop).Token | ConvertFrom-SecureString -AsPlainText
         $AuthSuccess = $true
     }
     catch 
@@ -248,7 +248,7 @@ foreach ($GraphEndpoint in $GraphEndpoints.Keys)
     # Grab an access token for the Azure SQL Database
     If ($null -eq $SQLToken)
     {
-        $SQLToken = (Get-AzAccessToken -ResourceUrl "https://database.windows.net/").Token
+        $SQLToken = (Get-AzAccessToken -ResourceUrl "https://database.windows.net/" -AsSecureString -ErrorAction Stop).Token | ConvertFrom-SecureString -AsPlainText
     }
 
     # Create a datatable to hold the data using the column names defined in the SQL database
