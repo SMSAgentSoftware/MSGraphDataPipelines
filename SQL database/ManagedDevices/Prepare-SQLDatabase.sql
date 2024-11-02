@@ -181,6 +181,7 @@ END
 GO
 
 -- Grant permissions to the Azure Automation account
+-- Substitute the user name with the name of you Azure Automation account
 -- On target database
 CREATE USER [aa-endpointeng-reporting] FROM EXTERNAL PROVIDER;
 ALTER ROLE db_datawriter ADD MEMBER [aa-endpointeng-reporting];
